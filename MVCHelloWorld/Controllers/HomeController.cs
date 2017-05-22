@@ -1,7 +1,5 @@
-﻿using System;
+﻿using MVCHelloWorld.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MVCHelloWorld.Controllers
@@ -10,21 +8,42 @@ namespace MVCHelloWorld.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            Person person = new Person { FirstName = "John", LastName = "Doe" };
+
+
+            return View(person);
         }
 
-        public ActionResult About()
+        public ActionResult SayHello(Person person)
         {
-            ViewBag.Message = "Your application description page.";
+            PersonRepository.AddPerson(person);
 
-            return View();
+            return RedirectToAction("ShowMeAList", "Home");
+
         }
 
-        public ActionResult Contact()
+        public ActionResult ShowMeAList()
         {
-            ViewBag.Message = "Your contact page.";
+            return View("ShowMeAList", PersonRepository.GetAllPersons());
+        }
 
-            return View();
+        public static class PersonRepository
+        {
+            static List<Person> list = new List<Person>()
+            {
+                new Person() {FirstName = "Luke", LastName = "Skywalker"},
+                new Person() {FirstName = "Leia", LastName = "Organa"},
+                new Person() {FirstName = "Han", LastName = "Solo"}
+
+            };
+
+            public static List<Person> GetAllPersons() { return list; }
+
+            public static void AddPerson(Person p)
+            {
+                list.Add(p);
+            }
         }
     }
+       
 }
